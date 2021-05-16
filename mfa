@@ -33,6 +33,8 @@ def authorize_mfa(credentials):
     with open(mfa_config, 'w') as f:
         json.dump({'arn': arn, **credentials}, f, indent=2)
 
+    return credentials
+
 
 try:
     with open(mfa_config, 'r') as f:
@@ -46,7 +48,7 @@ except KeyError:
     expiration = datetime.fromtimestamp(0).astimezone()
 
 if datetime.now().astimezone() > expiration:
-    authorize_mfa(credentials)
+    credentials = authorize_mfa(credentials)
 
 aws_env = {
     'AWS_ACCESS_KEY_ID': credentials['AccessKeyId'],
